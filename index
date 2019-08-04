@@ -1,0 +1,5 @@
+#!/bin/bash
+
+
+curl -s https://github.com/pknw1/public-scripts | grep -A999 "Latest commit"  | grep "master" | awk -F\" '{print "https://raw.githubusercontent.com/pknw1/public-scripts/master/" $6}'
+echo " "

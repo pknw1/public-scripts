@@ -1,0 +1,42 @@
+#!/bin/bash
+IN=$(md5sum ${1})
+
+vi $1
+
+OUT=$(md5sum ${1})
+
+echo $IN
+echo $OUT
+
+if [[ $IN == $OUT ]];
+then
+	echo same
+	exit 0
+else
+	echo diff
+
+CURRPWD=$(pwd)
+TODAY=$(date +%d%m%Y)
+FILENAME=$1
+if [[ ${FILENAME:0:1} == "/" ]] ; 
+	then 
+		FILEPATH="$1" 
+	else 
+		FILEPATH="${PWD}/${FILENAME}"
+	fi
+
+if ! [[ -f ${FILEPATH} ]]; then echo no file; exit 99; fi
+cd /
+BRANCH=$(git branch)
+
+if ! [[ "$BRANCH" == "$TODAY" ]]
+        then
+	        git checkout -b $TODAY
+        fi
+
+	git add ${FILEPATH} && git commit -m "$(date)" && git push -u origin $TODAY
+	cd $CURRPWD
+
+
+
+fi

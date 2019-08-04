@@ -1,0 +1,17 @@
+#!/bin/bash
+USERNAME=$(whoami)
+MYNAME=$0
+MYPWD=$(pwd)
+MYDATE=$(date)
+
+echo $MYDATE $USERNAME"@"$MYPWD/$MYNAME  $1 $2 $3
+
+if ! [[ -d ./.git ]]
+then
+	echo no git dir
+else
+	git add .
+	git commit -m  "$(date)"
+	git push 
+fi
+
