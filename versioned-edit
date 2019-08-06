@@ -1,4 +1,5 @@
 #!/bin/bash
+
 IN=$(md5sum ${1})
 
 vi $1
