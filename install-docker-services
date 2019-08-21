@@ -3,40 +3,5 @@
 if ! [[ -d /home/docker/services ]]; then mkdir -p /home/docker/services; fi
 if ! [[ -d /home/docker/scripts ]]; then mkdir -p /home/docker/scripts; fi
 
-cat > /usr/local/bin/docker-services << EOF
-#!/bin/bash
-CONFIG=/home/docker/services
-SVCS="proxy portainer"
-COMMAND=$(echo $1 | tr '[:lower:]' '[:upper:]')
-SCOPE=$2
-
-if [[ "$2" == "" ]]
-then
-        SVCS="proxy portainer"
-else
-        SVCS=$2
-fi
-
-
-for SVC in $SVCS
-do
-        case $SVC in
-                proxy) IMAGE="jwilder/nginx-proxy"; OPTS="-p 127.0.0.1:80:80 -v /var/run/docker.sock:/tmp/docker.sock:ro -v $CONFIG/proxy/usr-share-nginx-html:/usr/share/nginx/html -v /etc/localtime:/etc/localtime:ro --privileged=true";;
-                portainer) IMAGE="portainer/portainer"; OPTS="-p 127.0.0.1:9000:9000 -e VIRTUAL_HOST=portainer.win.pknw1.co.uk -e VIRTUAL_PORT=9000 -v /var/run/docker.sock:/var/run/docker.sock -v $CONFIG/portainer:/data";;
-                *) PORT="";;
-        esac
-
-        case $COMMAND in
-                START) docker run -d --restart=always --name=$SVC ${OPTS} ${IMAGE};;
-                STOP) docker stop $SVC;;
-                RM) docker rm -f $SVC;;
-                RESTART) docker restart $SVC;;
-                RECREATE) docker rm -f $SVC; ${0} start ${SVC};;
-                *)echo null;;
-        esac
-
-#docker run -d --restart=always --name=$SVC ${OPTS} ${IMAGE}
-done
-EOF
-
+wget -O /usr/local/bin/docker-services https://raw.githubusercontent.com/pknw1/public-scripts/master/scripts/docker-services 
 chmod +x /usr/local/bin/docker-services
