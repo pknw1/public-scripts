@@ -1,10 +1,4 @@
 #!/bin/bash
-
-if ! [[ -d /home/docker/services ]]; then mkdir -p /home/docker/services; fi
-if ! [[ -d /home/docker/scripts ]]; then mkdir -p /home/docker/scripts; fi
-
-cat > /usr/local/bin/docker-services << EOF
-#!/bin/bash
 CONFIG=/home/docker/services
 SVCS="proxy portainer"
 COMMAND=$(echo $1 | tr '[:lower:]' '[:upper:]')
@@ -37,6 +31,4 @@ do
 
 #docker run -d --restart=always --name=$SVC ${OPTS} ${IMAGE}
 done
-EOF
 
-chmod +x /usr/local/bin/docker-services
