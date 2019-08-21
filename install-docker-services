@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if ! [[ -d /home/docker/services ]]; then mkdir -p /home/docker/services; fi
+if ! [[ -d /home/docker/scripts ]]; then mkdir -p /home/docker/scripts; fi
+
+### portainer
+### proxy
+
+

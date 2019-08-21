@@ -1,0 +1,67 @@
+#!/bin/bash
+
+ apt-get update
+ apt-get install software-properties-common
+ add-apt-repository universe
+ add-apt-repository ppa:certbot/certbot
+ apt-get update
+ apt-get install -y certbot
+ 
+cat > /usr/local/bin/ssl-cert <<EOF 
+#!/bin/bash
+
+echo $1
+echo $1 >> /var/log/ssl-certs.log
+
+function about(){
+        printf '
+        Script Purpose : remove old certs and request new one
+        Script Usage   : '${0}' subdomain.domain.co.uk
+
+        '
+
+        exit 0
+}
+
+DATE=$(date +%s)
+
+if [ "${1}" == "--help" ]; then about; fi
+if [ $# -ne 1 ]; then about; fi
+
+
+tar -zcvf /etc/ssl-bak/${DATE}.tgz /etc/ssl /etc/letsencrypt 2>&1 >> /dev/null || exit 0
+ls -lrth /etc/ssl-bak/${DATE}.tgz
+
+letsencrypt=$(ls /etc/letsencrypt/archive | grep $1)
+crtlist=$(cat /etc/ssl/private/crt-list.txt | grep $1)
+
+
+if [ $letsencrypt ]; then
+
+if [ -d /etc/letsencrypt/archive/$1 ]; then rm -rf /etc/letsencrypt/archive/$1; fi
+if [ -d /etc/letsencrypt/live/$1 ]; then rm -rf /etc/letsencrypt/live/$1; fi
+if [ -f /etc/letsencrypt/renewal/$1.conf ]; then rm -rf /etc/letsencrypt/renewal/$1.conf; fi
+
+fi
+
+if [ $crtlist ]; then
+
+if [ -d /etc/ssl/private/$1.pem ]; then rm /etc/ssl/private/$1.pem; fi
+cat /etc/ssl/private/crt-list.txt | grep -v ${1} > /tmp/crt-list.new
+cp /tmp/crt-list.new /etc/ssl/private/crt-list.txt
+
+fi
+
+certbot certonly --expand --authenticator standalone --installer nginx --pre-hook "service haproxy stop" --post-hook "service haproxy start" -n --agree-tos -m pknw1@hotmail.co.uk -d  $1
+cat /etc/letsencrypt/live/$1/*pem > /etc/ssl/private/$1.pem
+echo /etc/ssl/private/$1.pem >> /etc/ssl/private/crt-list.txt
+
+echo $1 cert requested
+
+ls -l /etc/ssl/private/$1.pem
+cat /etc/ssl/private/crt-list.txt | grep $1
+
+EOF
+
+
+chmod  +x /usr/local/bin/ssl-cert

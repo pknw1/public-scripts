@@ -1,0 +1,47 @@
+#!/bin/bash
+PWD=$(pwd)
+SCRIPTNAME=$(basename ${PWD})
+
+
+function vars() {
+	echo $PWD
+	echo $SCRIPTNAME
+}
+
+function create-config(){
+
+	printf "%s" "Is the config local only or remote (and encrypted?) [L/R] : " && read -n1 CHOICE && CHOICE=$(echo $CHOICE | tr '[:lower:]' '[:upper:]')
+
+	case $CHOICE in
+		L) echo local ;;
+               R) echo remote  ;;
+             *) echo exit ;;
+        esac
+
+}
+
+function do-configuration() {
+	printf "\t   %s\n" "$SCRIPTNAME configuration"
+	printf "\n"
+	printf "%s" "configure $SCRIPTNAME now? [Y/N] : " && read -n1 CHOICE && CHOICE=$(echo $CHOICE | tr '[:lower:]' '[:upper:]') 
+	echo " "
+
+	case $CHOICE in
+		Y) create-config ;;
+		N) echo no; exit 99 ;;
+		*) echo exit ;;
+	esac
+}
+
+
+function check-configured() {
+	if ! [[ -d ./.configured ]]; then 
+		do-configuration	
+	else
+		cat ./.configured
+	fi
+}
+
+
+vars
+check-configured
