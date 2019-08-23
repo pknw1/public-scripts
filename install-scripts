@@ -33,7 +33,7 @@ then
 	echo "	$(wc  -l ${fn} | awk '{print $1}')	| $(stat -c %y ${fn} | awk -F.  '{print $1}') | ${fn}" 
 	done
 	confirm
-	scp -r * $H:/home/public-scripts/	
+	scp -r * $HOSTNAME:/home/public-scripts/	
 
 else
 	echo "Source Script : ${SCRIPT}"
@@ -47,6 +47,6 @@ else
 	       echo " "
 	fi
 	confirm
-		echo copy
+	scp  ${SCRIPT} $HOSTNAME:/home/public-scripts/	
 fi
 
