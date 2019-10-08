@@ -4,4 +4,5 @@ apt install -y fail2ban
 sudo systemctl start fail2ban
 sudo systemctl enable fail2ban
 
-
+wget -O /etc/fail2ban/jail.local https://raw.githubusercontent.com/pknw1/public-scripts/master/scripts/jail.local
+systemctl restart fail2ban
