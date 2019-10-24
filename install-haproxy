@@ -1,8 +1,0 @@
-#!/bin/bash
-
-  add-apt-repository ppa:vbernat/haproxy-1.8
-  apt update
-  apt install -y haproxy
-
-wget -O /usr/local/bin/haproxy-check https://raw.githubusercontent.com/pknw1/public-scripts/master/scripts/haproxy-check
-chmod +x /usr/local/bin/haproxy-check

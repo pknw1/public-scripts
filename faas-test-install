@@ -1,4 +1,0 @@
-#!/bin/bash
-curl -sL https://cli.openfaas.com | sudo sh
-docker swarm init 2>&1 >> ~/docker-swarm-config
-git clone https://github.com/openfaas/faas && cd faas && ./deploy_stack.sh --no-auth
